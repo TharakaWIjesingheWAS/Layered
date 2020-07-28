@@ -50,6 +50,24 @@ public class BusinessLogic {
         return DataLayer.updateCustomer(new CustomerTM(customerId,name,address));
     }
 
+    public static String getNewItemCode(){
+        String lastItemCode = DataLayer.getLastItemCode();
+        if (lastItemCode == null){
+            return "I001";
+        }else {
+            int maxCode = Integer.parseInt(lastItemCode.replace("I", ""));
+            String code = "";
+            if (maxCode < 10) {
+                code = "I00" + maxCode;
+            } else if (maxCode < 100) {
+                code = "I0" + maxCode;
+            } else {
+                code = "I" + maxCode;
+            }
+            return code;
+        }
+    }
+
     public static List<ItemTM> getAllItems(){
         return DataLayer.getAllItems();
     }
