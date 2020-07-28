@@ -163,6 +163,22 @@ public class DataLayer {
         }
     }
 
+    public static String getLastOrderId(){
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            Statement stm = connection.createStatement();
+            ResultSet rst = stm.executeQuery("SELECT *FROM `Order` ORDER BY id DESC LIMIT 1");
+            if (rst.next()){
+                return rst.getString(1);
+            }else {
+                return null;
+            }
+        } catch (Exception throwables) {
+            throwables.printStackTrace();
+            return null;
+        }
+    }
+
     public static boolean placeOrder(OrderTM order, List<OrderDetailTM> orderDetails){
         Connection connection = DBConnection.getInstance().getConnection();
         try {

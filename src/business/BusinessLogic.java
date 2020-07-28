@@ -84,6 +84,25 @@ public class BusinessLogic {
         return DataLayer.updateItem(new ItemTM(itemCode,description,qtyOnHand,unitPrice));
     }
 
+    public  static String getNewOrderId(){
+        String lastOrderId = DataLayer.getLastOrderId();
+        if (lastOrderId == null){
+            return "OD001";
+        }else {
+            int maxId = Integer.parseInt(lastOrderId.replace("OD", ""));
+            maxId = maxId + 1;
+            String id = "";
+            if (maxId < 10) {
+                id = "OD00" + maxId;
+            } else if (maxId < 100) {
+                id = "OD0" + maxId;
+            } else {
+                id = "OD" + maxId;
+            }
+            return id;
+        }
+    }
+
     public static boolean placeOrder(OrderTM order, List<OrderDetailTM> orderDetails){
         return DataLayer.placeOrder(order,orderDetails);
     }
