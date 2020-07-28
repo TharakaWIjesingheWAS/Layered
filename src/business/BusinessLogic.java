@@ -1,14 +1,37 @@
 package business;
 
 import dao.DataLayer;
+import db.DBConnection;
 import util.CustomerTM;
 import util.ItemTM;
 import util.OrderDetailTM;
 import util.OrderTM;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 public class BusinessLogic {
+
+    public static String getNewCustomerId(){
+        String lastCustomerId = DataLayer.getLastCustomerId();
+        if (lastCustomerId == null){
+            return "C001";
+        }else {
+            int maxId = Integer.parseInt(lastCustomerId.replace("C", ""));
+            maxId = maxId + 1;
+            String id = "";
+            if (maxId < 10) {
+                id = "C00" + maxId;
+            } else if (maxId < 100) {
+                id = "C0" + maxId;
+            } else {
+                id = "C" + maxId;
+            }
+            return id;
+        }
+    }
 
 
     public static List<CustomerTM> getAllCustomer(){
