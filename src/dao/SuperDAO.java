@@ -1,15 +1,10 @@
 package dao;
 
+import entity.SuperEntity;
+
+import java.io.Serializable;
 import java.util.List;
 
 public interface SuperDAO {
-    List<Object> findAll();
 
-    Object find(Object key);
-
-    boolean save(Object entity);
-
-    boolean update(Object entity);
-
-    boolean delete(Object key);
 }

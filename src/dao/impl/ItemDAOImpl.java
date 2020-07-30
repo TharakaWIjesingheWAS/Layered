@@ -11,12 +11,31 @@ import java.util.List;
 
 public class ItemDAOImpl implements ItemDAO {
 
-    public List<Object> findAll() {
+
+    @Override
+    public String getLastItemCode() {
+        try {
+            Connection connection = DBConnection.getInstance().getConnection();
+            Statement stm = connection.createStatement();
+            ResultSet rst = stm.executeQuery("SELECT * FROM Item ORDER BY code DESC LIMIT 1");
+            if (rst.next()) {
+                return rst.getString(1);
+            } else {
+                return null;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    @Override
+    public List<Item> findAll() {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
             Statement stm = connection.createStatement();
             ResultSet rst = stm.executeQuery("SELECT * FROM item");
-            List<Object> items = new ArrayList<>();
+            List<Item> items = new ArrayList<>();
             while (rst.next()) {
                 items.add(new Item(rst.getString(1),
                         rst.getString(2),
@@ -28,10 +47,10 @@ public class ItemDAOImpl implements ItemDAO {
             e.printStackTrace();
             return null;
         }
-
     }
 
-    public Item find(Object key) {
+    @Override
+    public Item find(String key) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
             PreparedStatement pstm = connection.prepareStatement("SELECT * FROM Item WHERE code=?");
@@ -51,41 +70,40 @@ public class ItemDAOImpl implements ItemDAO {
 
     }
 
-    public boolean save(Object entity) {
+    @Override
+    public boolean save(Item entity) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
             PreparedStatement pstm = connection.prepareStatement("INSERT InTO Item VALUES(?,?,?,?)");
-            Item item = (Item) entity;
-            pstm.setObject(1, item.getCode());
-            pstm.setObject(2, item.getDescription());
-            pstm.setObject(3, item.getUnitPrice());
-            pstm.setObject(4, item.getQtyOnHand());
+            pstm.setObject(1, entity.getCode());
+            pstm.setObject(2, entity.getDescription());
+            pstm.setObject(3, entity.getUnitPrice());
+            pstm.setObject(4, entity.getQtyOnHand());
             return pstm.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
-    public boolean update(Object entity) {
+    @Override
+    public boolean update(Item entity) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
             PreparedStatement pstm = connection.prepareStatement("UPDATE Item SET description=?, unitPrice=?, qtyOnHand=? WHERE code=?");
-            Item item = (Item) entity;
-            pstm.setObject(4, item.getCode());
-            pstm.setObject(1, item.getDescription());
-            pstm.setObject(2, item.getUnitPrice());
-            pstm.setObject(3, item.getQtyOnHand());
+            pstm.setObject(4, entity.getCode());
+            pstm.setObject(1, entity.getDescription());
+            pstm.setObject(2, entity.getUnitPrice());
+            pstm.setObject(3, entity.getQtyOnHand());
             return pstm.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
-
     }
 
-    public boolean delete(Object key) {
+    @Override
+    public boolean delete(String key) {
         try {
             Connection connection = DBConnection.getInstance().getConnection();
             PreparedStatement pstm = connection.prepareStatement("DELETE FROM Item WHERE id=?");
@@ -94,22 +112,6 @@ public class ItemDAOImpl implements ItemDAO {
         } catch (SQLException e) {
             e.printStackTrace();
             return false;
-        }
-    }
-
-    public String getLastItemCode() {
-        try {
-            Connection connection = DBConnection.getInstance().getConnection();
-            Statement stm = connection.createStatement();
-            ResultSet rst = stm.executeQuery("SELECT * FROM Item ORDER BY code DESC LIMIT 1");
-            if (rst.next()) {
-                return rst.getString(1);
-            } else {
-                return null;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return null;
         }
     }
 }
